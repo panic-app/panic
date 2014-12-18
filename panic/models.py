@@ -1,15 +1,7 @@
-from mongoengine import StringField, ReferenceField, ListField
-from panic.mongo import BaseDocument, EnumField
+from mongoengine import StringField, ReferenceField, ListField, EmailField, DateTimeField
 
-# Move this to a utils
-def enum(name, *sequential, **named):
-    values = dict(zip(sequential, range(len(sequential))), **named)
-
-    # NOTE: Yes, we *really* want to cast using str() here.
-    # On Python 2 type() requires a byte string (which is str() on Python 2).
-    # On Python 3 it does not matter, so we'll use str(), which acts as
-    # a no-op.
-    return type(str(name), (), values)
+from .mongo import BaseDocument, EnumField
+from .utils import enum
 
 IncidentRoles = enum('IncidentRoles', COMMANDER='commander',
                      COMMUNICATIONS='communications',
@@ -46,8 +38,43 @@ class Incident(BaseDocument):
     incident_commander = ReferenceField('User')
     communications = ReferenceField('User')
     team = ListField(ReferenceField('User'))
+    sit_rep = ReferenceField('SituationReport')
+
+    start_time = DateTimeField()
+    resolution_time = DateTimeField
 
 
+class SituationReport(BaseDocument):
+    """ A good sitrep provides information to active incident responders, helps new responders get quickly up to date
+    about the situation, and gives context to other observers like customer support staff.
 
+    The Content should markdown friendly
+    """
+    content = StringField()
+
+
+class Update(BaseDocument):
+    """
+    An Incident has many updates -- which are communications that go to users that are observing the projects
+    """
+    message = StringField()
+    incident = ReferenceField('Incident')
+
+
+class Subscriber(BaseDocument):
+    """Represents a user who is interested in getting updates about a certain project"""
+    meta = {'allow_inheritance': True}
+    project = ReferenceField('Project')
+
+
+class EmailSubscriber(Subscriber):
+    email = EmailField()
+
+
+# class SMSSubscriber(Subscriber):
+#     telephone_number = StringField()
+
+# class SlackSubscriber(Subscriber)
+#
 
 
