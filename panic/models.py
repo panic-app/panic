@@ -31,6 +31,8 @@ class Incident(BaseDocument):
     name = StringField()
     project = ReferenceField('Project')
     severity = EnumField(('high', 'medium', 'low'))
+    status = EnumField(('draft', 'assessment', 'mitigation', 'management', 'resolved', 'post-incident', 'closed'),
+                       default='draft')
 
     # Curious if this is the best way to do this.  Maybe we should
     # have a UserRole object.  So an incident has many UserRoles
@@ -41,7 +43,7 @@ class Incident(BaseDocument):
     sit_rep = ListField(ReferenceField('SituationReport'))
 
     start_time = DateTimeField()
-    resolution_time = DateTimeField
+    resolution_time = DateTimeField()
 
 
 class SituationReport(BaseDocument):
