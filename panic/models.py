@@ -38,7 +38,7 @@ class Incident(BaseDocument):
     incident_commander = ReferenceField('User')
     communications = ReferenceField('User')
     team = ListField(ReferenceField('User'))
-    sit_rep = ReferenceField('SituationReport')
+    sit_rep = ListField(ReferenceField('SituationReport'))
 
     start_time = DateTimeField()
     resolution_time = DateTimeField
