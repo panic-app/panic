@@ -51,6 +51,7 @@ class SituationReport(BaseDocument):
     The Content should markdown friendly
     """
     content = StringField()
+    author = ReferenceField('User')
 
 
 class Update(BaseDocument):
@@ -59,6 +60,7 @@ class Update(BaseDocument):
     """
     message = StringField()
     incident = ReferenceField('Incident')
+    author = ReferenceField('User')
 
 
 class Subscriber(BaseDocument):
